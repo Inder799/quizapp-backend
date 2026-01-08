@@ -1,7 +1,9 @@
 import express from "express";
 import cors from "cors";
 import quizRouter from "./router/quiz.router.js";
-import loginRouter from "./router/auth.router.js";
+import { loginRouter, signUpRouter } from "./router/auth.router.js";
+import { routeNotFound } from "./middleware/routeNotFound.js";
+import { quizzes } from "./db/quizzes.js";
 
 const app = express();
 app.use(cors());
@@ -18,12 +20,16 @@ const PORT = 8080;
  */
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.json(quizzes);
 });
 
 app.use("/quiz", quizRouter);
 
 app.use("/auth/login", loginRouter);
+
+app.use("/auth/signup", signUpRouter);
+
+app.use(routeNotFound);
 
 app.listen(process.env.PORT || PORT, () => {
   console.log("Server started....");
