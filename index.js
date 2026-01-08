@@ -1,13 +1,13 @@
 import express from "express";
 import cors from "cors";
 import quizRouter from "./router/quiz.router.js";
-import { userData } from "./db/users.js";
+import loginRouter from "./router/auth.router.js";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const port = 8080;
+const PORT = 8080;
 
 /**
  * GET
@@ -23,18 +23,8 @@ app.get("/", (req, res) => {
 
 app.use("/quiz", quizRouter);
 
-app.post("/auth/login", (req, res) => {
-  const { username, password } = req.body;
-  const isUserVerified = userData.users.some(
-    (user) => user.username === username && user.password === password
-  );
-  if (isUserVerified) {
-    res.json({ message: "User Verified" });
-  } else {
-    res.status(401).json({ message: "Invalid Credentials" });
-  }
-});
+app.use("/auth/login", loginRouter);
 
-app.listen(port, () => {
-  console.log("Listening to port 8080");
+app.listen(process.env.PORT || PORT, () => {
+  console.log("Server started....");
 });
